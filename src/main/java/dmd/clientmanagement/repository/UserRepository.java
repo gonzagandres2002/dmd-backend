@@ -1,5 +1,6 @@
-package dmd.clientmanagement.user;
+package dmd.clientmanagement.repository;
 
+import dmd.clientmanagement.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

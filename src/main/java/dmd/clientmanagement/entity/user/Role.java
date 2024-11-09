@@ -1,4 +1,4 @@
-package dmd.clientmanagement.user;
+package dmd.clientmanagement.entity.user;
 
 public enum Role {
     ADMIN,

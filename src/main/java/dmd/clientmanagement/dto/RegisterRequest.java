@@ -1,4 +1,4 @@
-package dmd.clientmanagement.auth;
+package dmd.clientmanagement.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-
-public class LoginRequest {
+@NoArgsConstructor
+public class RegisterRequest {
     String username;
     String password;
+    String firstname;
+    String lastname;
+    String country;
 }

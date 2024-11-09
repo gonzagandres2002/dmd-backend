@@ -1,4 +1,4 @@
-package dmd.clientmanagement.auth;
+package dmd.clientmanagement.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AuthResponse {
     String token;
+    String username;
+    String role;
 }

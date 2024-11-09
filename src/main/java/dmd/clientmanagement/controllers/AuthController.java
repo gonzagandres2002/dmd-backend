@@ -1,11 +1,12 @@
-package dmd.clientmanagement.auth;
+package dmd.clientmanagement.controllers;
 
+import dmd.clientmanagement.dto.AuthResponse;
+import dmd.clientmanagement.service.AuthService;
+import dmd.clientmanagement.dto.LoginRequest;
+import dmd.clientmanagement.dto.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/auth")

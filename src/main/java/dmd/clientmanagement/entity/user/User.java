@@ -1,4 +1,4 @@
-package dmd.clientmanagement.user;
+package dmd.clientmanagement.entity.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import dmd.clientmanagement.entity.ServiceType;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -32,6 +34,14 @@ public class User implements UserDetails {
     String country;
     @Enumerated(EnumType.STRING)
     Role role;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_services",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private Set<ServiceType> services;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

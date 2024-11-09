@@ -1,4 +1,4 @@
-package dmd.clientmanagement.jwt;
+package dmd.clientmanagement.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,6 +1,6 @@
 package dmd.clientmanagement.config;
 
-import dmd.clientmanagement.user.UserRepository;
+import dmd.clientmanagement.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

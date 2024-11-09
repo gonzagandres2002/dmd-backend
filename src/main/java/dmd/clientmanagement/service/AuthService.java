@@ -1,12 +1,16 @@
-package dmd.clientmanagement.auth;
+package dmd.clientmanagement.service;
 
-import dmd.clientmanagement.jwt.JwtService;
-import dmd.clientmanagement.user.Role;
-import dmd.clientmanagement.user.User;
-import dmd.clientmanagement.user.UserRepository;
+import dmd.clientmanagement.dto.LoginRequest;
+import dmd.clientmanagement.dto.RegisterRequest;
+import dmd.clientmanagement.dto.AuthResponse;
+import dmd.clientmanagement.security.JwtService;
+import dmd.clientmanagement.entity.user.Role;
+import dmd.clientmanagement.entity.user.User;
+import dmd.clientmanagement.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,11 +25,17 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(LoginRequest request) {
+
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
         UserDetails user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+
         String token = jwtService.getToken(user);
+
         return AuthResponse.builder()
                 .token(token)
+                .username(user.getUsername())
+                .role(((GrantedAuthority) user.getAuthorities().toArray()[0]).getAuthority())
                 .build();
     }
 
