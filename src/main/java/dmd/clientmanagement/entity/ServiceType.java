@@ -1,5 +1,6 @@
 package dmd.clientmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import dmd.clientmanagement.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,9 +21,9 @@ public class ServiceType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
-    private String description;
 
     @ManyToMany(mappedBy = "services")
-    private Set<User> users;
+    private List<User> users;
 }

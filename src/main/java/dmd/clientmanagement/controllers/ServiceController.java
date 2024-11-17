@@ -1,5 +1,6 @@
-package dmd.clientmanagement.controller;
+package dmd.clientmanagement.controllers;
 
+import dmd.clientmanagement.dto.ServiceTypeDto;
 import dmd.clientmanagement.entity.ServiceType;
 import dmd.clientmanagement.service.ServiceTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,40 +20,33 @@ public class ServiceController {
         this.serviceTypeService = serviceTypeService;
     }
 
-    // GET endpoint to fetch all services
     @GetMapping
-    public ResponseEntity<List<ServiceType>> getAllServices() {
-        List<ServiceType> services = serviceTypeService.getAllServices();
+    public ResponseEntity<List<ServiceTypeDto>> getAllServices() {
+        List<ServiceTypeDto> services = serviceTypeService.getAllServices();
         return ResponseEntity.ok(services);
     }
 
-    // GET endpoint to fetch a service by ID
     @GetMapping("/{id}")
-    public ResponseEntity<ServiceType> getServiceById(@PathVariable Long id) {
-        return serviceTypeService.getServiceById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ServiceTypeDto> getServiceById(@PathVariable Long id) {
+        return ResponseEntity.ok(serviceTypeService.getServiceById(id));
     }
 
-    // POST endpoint to create a new service
     @PostMapping
-    public ResponseEntity<ServiceType> addService(@RequestBody ServiceType service) {
-        ServiceType createdService = serviceTypeService.addService(service);
+    public ResponseEntity<ServiceTypeDto> addService(@RequestBody ServiceTypeDto service) {
+        ServiceTypeDto createdService = serviceTypeService.addService(service);
         return ResponseEntity.ok(createdService);
     }
 
-    // PUT endpoint to update an existing service
     @PutMapping("/{id}")
-    public ResponseEntity<ServiceType> updateService(@PathVariable Long id, @RequestBody ServiceType updatedService) {
+    public ResponseEntity<ServiceTypeDto> updateService(@PathVariable Long id, @RequestBody ServiceTypeDto updatedService) {
         try {
-            ServiceType service = serviceTypeService.updateService(id, updatedService);
+            ServiceTypeDto service = serviceTypeService.updateService(id, updatedService);
             return ResponseEntity.ok(service);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    // DELETE endpoint to remove a service
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteService(@PathVariable Long id) {
         serviceTypeService.deleteService(id);

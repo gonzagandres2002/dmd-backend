@@ -1,52 +1,22 @@
 package dmd.clientmanagement.service;
 
-
-import dmd.clientmanagement.entity.ServiceType;
-import dmd.clientmanagement.repository.ServiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import dmd.clientmanagement.dto.ServiceTypeDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ServiceTypeService {
+public interface ServiceTypeService {
 
-    private final ServiceRepository serviceRepository;
+    List<ServiceTypeDto> getAllServices();
 
-    @Autowired
-    public ServiceTypeService(ServiceRepository serviceRepository) {
-        this.serviceRepository = serviceRepository;
-    }
+    ServiceTypeDto getServiceById(Long id);
 
-    // Retrieve all services
-    public List<ServiceType> getAllServices() {
-        return serviceRepository.findAll();
-    }
+    ServiceTypeDto addService(ServiceTypeDto service);
 
-    // Retrieve a specific service by ID
-    public Optional<ServiceType> getServiceById(Long id) {
-        return serviceRepository.findById(id);
-    }
+    ServiceTypeDto updateService(Long id, ServiceTypeDto updatedService);
 
-    // Add a new service
-    public ServiceType addService(ServiceType service) {
-        return serviceRepository.save(service);
-    }
+    void deleteService(Long id);
 
-    // Update an existing service
-    public ServiceType updateService(Long id, ServiceType updatedService) {
-        return serviceRepository.findById(id)
-                .map(service -> {
-                    service.setName(updatedService.getName());
-                    service.setDescription(updatedService.getDescription());
-                    return serviceRepository.save(service);
-                })
-                .orElseThrow(() -> new RuntimeException("Service not found with id " + id));
-    }
-
-    // Delete a service
-    public void deleteService(Long id) {
-        serviceRepository.deleteById(id);
-    }
 }

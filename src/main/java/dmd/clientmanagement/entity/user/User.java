@@ -1,5 +1,6 @@
 package dmd.clientmanagement.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +25,9 @@ import java.util.Set;
 })
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
-    Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
     @Column(nullable = false)
     String username;
     String password;
@@ -35,13 +37,14 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     Role role;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
-            name = "users_services",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
+            name = "user_services",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id", referencedColumnName = "id")
     )
-    private Set<ServiceType> services;
+    @JsonBackReference
+    private List<ServiceType> services;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
