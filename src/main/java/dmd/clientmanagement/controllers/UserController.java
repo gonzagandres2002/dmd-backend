@@ -2,7 +2,6 @@ package dmd.clientmanagement.controllers;
 
 import dmd.clientmanagement.dto.UserDto;
 import dmd.clientmanagement.entity.user.Role;
-import dmd.clientmanagement.entity.user.User;
 import dmd.clientmanagement.exceptions.UserNotFoundException;
 import dmd.clientmanagement.service.UserService;
 import org.springframework.http.ResponseEntity;

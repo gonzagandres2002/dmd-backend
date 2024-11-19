@@ -5,7 +5,6 @@ import dmd.clientmanagement.entity.ServiceType;
 import dmd.clientmanagement.entity.user.Role;
 import dmd.clientmanagement.entity.user.User;
 import dmd.clientmanagement.exceptions.UserNotFoundException;
-import dmd.clientmanagement.mapper.ServiceTypeMapper;
 import dmd.clientmanagement.mapper.UserMapper;
 import dmd.clientmanagement.repository.ServiceTypeRepository;
 import dmd.clientmanagement.repository.UserRepository;

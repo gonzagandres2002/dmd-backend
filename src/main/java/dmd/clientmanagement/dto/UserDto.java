@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class UserDto {
+    private Long id;
     private String username;
     private String role;
     private List<ServiceType> services;

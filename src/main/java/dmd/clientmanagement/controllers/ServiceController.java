@@ -1,7 +1,6 @@
 package dmd.clientmanagement.controllers;
 
 import dmd.clientmanagement.dto.ServiceTypeDto;
-import dmd.clientmanagement.entity.ServiceType;
 import dmd.clientmanagement.service.ServiceTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
