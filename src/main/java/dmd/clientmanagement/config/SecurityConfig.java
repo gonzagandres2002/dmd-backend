@@ -1,6 +1,7 @@
 package dmd.clientmanagement.config;
 
 import dmd.clientmanagement.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -16,6 +18,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +35,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authRequest ->
                         authRequest
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers("/**", "/").permitAll()
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/api/users/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated()
@@ -40,6 +44,19 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2 -> oauth2
+                        //.defaultSuccessUrl("http://localhost:3000/dashboard/") // Redirect to your frontend
+                        .failureUrl("http://localhost:3000/login?error=true")
+                        .successHandler((request, response, authentication) -> {
+                            // Manually clear the JSESSIONID cookie after OAuth2 login
+                            Cookie cookie = new Cookie("JSESSIONID", null);
+                            cookie.setHttpOnly(true);
+                            cookie.setMaxAge(0); // Delete immediately
+                            cookie.setPath("/");
+                            response.addCookie(cookie);
+                            //response.sendRedirect("http://localhost:3000/dashboard/"); // Redirect to frontend
+                        })
+                )
                 .build();
     }
 
