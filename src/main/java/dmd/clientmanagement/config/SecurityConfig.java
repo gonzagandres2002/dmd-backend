@@ -1,5 +1,6 @@
 package dmd.clientmanagement.config;
 
+import dmd.clientmanagement.security.CustomOAuth2SuccessHandler;
 import dmd.clientmanagement.security.JwtAuthenticationFilter;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,16 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authProvider;
+    private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(customOAuth2SuccessHandler)
+                        .failureUrl("http://localhost:3000/login?error=true")
+                )
                 .authorizeHttpRequests(authRequest ->
                         authRequest
                                 .requestMatchers("/**", "/").permitAll()
@@ -44,19 +50,6 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login(oauth2 -> oauth2
-                        //.defaultSuccessUrl("http://localhost:3000/dashboard/") // Redirect to your frontend
-                        .failureUrl("http://localhost:3000/login?error=true")
-                        .successHandler((request, response, authentication) -> {
-                            // Manually clear the JSESSIONID cookie after OAuth2 login
-                            Cookie cookie = new Cookie("JSESSIONID", null);
-                            cookie.setHttpOnly(true);
-                            cookie.setMaxAge(0); // Delete immediately
-                            cookie.setPath("/");
-                            response.addCookie(cookie);
-                            //response.sendRedirect("http://localhost:3000/dashboard/"); // Redirect to frontend
-                        })
-                )
                 .build();
     }
 
