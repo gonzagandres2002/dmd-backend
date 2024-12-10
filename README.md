@@ -1,7 +1,7 @@
 
 # Backend for Tailored Software and Social Media Management Services
 
-This repository contains the backend application for the DMD platform. It provides APIs to support tailored software and social media management services, ensuring secure, efficient, and scalable operations.
+This repository contains the backend application for the DigiMediaDevs platform. It provides APIs to support tailored software and social media management services, ensuring secure, efficient, and scalable operations.
 
 ---
 
@@ -24,7 +24,7 @@ This repository contains the backend application for the DMD platform. It provid
 - **Language:** Java (Spring Boot)
 - **Security:** JWT, OAuth
 - **Database:** PostgreSQL
-- **Build Tool:** Maven
+- **Build Tool:** Maven/Gradle
 - **Other:** REST API, Hibernate ORM
 
 ---
@@ -49,6 +49,10 @@ This repository contains the backend application for the DMD platform. It provid
 ## Installation
 
 1. **Clone the Repository**
+   ```bash
+   git clone <repository_url>
+   cd <repository_folder>
+   ```
 
 2. **Configure Environment Variables**
    - Add the required environment variables to your system or a `.env` file.
@@ -65,7 +69,11 @@ This repository contains the backend application for the DMD platform. It provid
    ```bash
    mvn spring-boot:run
    ```
-   
+   or
+   ```bash
+   gradle bootRun
+   ```
+
 ---
 
 ## API Endpoints
@@ -76,8 +84,8 @@ This repository contains the backend application for the DMD platform. It provid
 - `POST /auth/refresh` - Refresh JWT token
 
 ### Services
-- `GET /api/services` - Fetch list of services
-- `POST /api/services` - Add a new service
+- `GET /services` - Fetch list of services
+- `POST /services` - Add a new service
 - `PUT /services/:id` - Update service details
 - `DELETE /services/:id` - Remove a service
 
