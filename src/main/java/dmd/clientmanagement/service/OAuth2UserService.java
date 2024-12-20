@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -22,9 +22,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OAuth2UserService {
 
-    private final WebClient webClient;
     private final JwtService jwtService;
     private final Dotenv dotenv;
+    private final RestTemplate restTemplate;
 
     @Value("${google.redirect-uri}")
     private String redirectUri;
@@ -51,12 +51,11 @@ public class OAuth2UserService {
                 "grant_type", "authorization_code"
         );
 
-        Map<String, Object> tokenResponse = webClient.post()
-                .uri(tokenUri)
-                .bodyValue(tokenRequestBody)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
+        Map<String, Object> tokenResponse = restTemplate.postForObject(
+                tokenUri,
+                tokenRequestBody,
+                Map.class
+        );
 
         if (tokenResponse == null || !tokenResponse.containsKey("access_token")) {
             throw new IllegalStateException("Failed to retrieve access token from Google");
@@ -65,12 +64,10 @@ public class OAuth2UserService {
         String accessToken = (String) tokenResponse.get("access_token");
 
         // Step 2: Retrieve user information using the access token
-        Map<String, Object> userInfo = webClient.get()
-                .uri(userInfoUri)
-                .headers(headers -> headers.setBearerAuth(accessToken))
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
+        Map<String, Object> userInfo = restTemplate.getForObject(
+                userInfoUri + "?access_token=" + accessToken,
+                Map.class
+        );
 
         if (userInfo == null || !userInfo.containsKey("email")) {
             throw new IllegalStateException("Failed to retrieve user info from Google");
