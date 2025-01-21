@@ -1,5 +1,6 @@
 package dmd.clientmanagement.controllers;
 
+import dmd.clientmanagement.dto.SolutionTrackerDto;
 import dmd.clientmanagement.entity.solutionTracker.SolutionTracker;
 import dmd.clientmanagement.service.SolutionTrackerService;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +18,27 @@ public class SolutionTrackerController {
         this.solutionTrackerService = solutionTrackerService;
     }
 
+    // Get solutions for a specific user
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<SolutionTracker>> getSolutionsByUser(@PathVariable Long userId) {
         List<SolutionTracker> solutions = solutionTrackerService.getSolutionsByUserId(userId);
         return ResponseEntity.ok(solutions);
     }
 
-    @PutMapping("/{solutionId}/status")
-    public ResponseEntity<SolutionTracker> updateSolutionStatus(@PathVariable Long solutionId, @RequestParam String status) {
-        SolutionTracker updatedSolution = solutionTrackerService.updateSolutionStatus(solutionId, status);
+    // Create a new solution
+    @PostMapping
+    public ResponseEntity<SolutionTracker> createSolution(@RequestBody SolutionTrackerDto solutionTrackerDto) {
+        SolutionTracker newSolution = solutionTrackerService.createSolution(solutionTrackerDto);
+        return ResponseEntity.status(201).body(newSolution);
+    }
+
+    // Update solution progress or status
+    @PatchMapping("/{solutionId}")
+    public ResponseEntity<SolutionTracker> updateSolution(@PathVariable Long solutionId,
+                                                          @RequestParam(required = false) Integer progressPercentage) {
+        SolutionTracker updatedSolution = solutionTrackerService.updateSolution(solutionId, progressPercentage);
         return ResponseEntity.ok(updatedSolution);
     }
 }
+
+

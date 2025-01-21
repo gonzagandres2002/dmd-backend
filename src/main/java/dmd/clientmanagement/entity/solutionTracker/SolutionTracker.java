@@ -3,7 +3,6 @@ package dmd.clientmanagement.entity.solutionTracker;
 import dmd.clientmanagement.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 
@@ -15,7 +14,7 @@ public class SolutionTracker {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -25,6 +24,7 @@ public class SolutionTracker {
     @Enumerated(EnumType.STRING)
     private SolutionStatus status;
 
+    private int progressPercentage;
     private LocalDate startDate;
     private LocalDate endDate;
 }

@@ -36,7 +36,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     Role role;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToMany
     @JoinTable(
             name = "user_services",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),

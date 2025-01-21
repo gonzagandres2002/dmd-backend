@@ -25,19 +25,23 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        );
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-
-        UserDetails user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         String token = jwtService.getToken(user);
 
         return AuthResponse.builder()
                 .token(token)
                 .username(user.getUsername())
-                .role(((GrantedAuthority) user.getAuthorities().toArray()[0]).getAuthority())
+                .role(user.getAuthorities().stream().findFirst().get().getAuthority()) // Get the role from authorities
+                .userId(user.getId()) // Include the userId
                 .build();
     }
+
 
     public AuthResponse register(RegisterRequest request) {
         User user = User.builder()

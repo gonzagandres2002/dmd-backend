@@ -2,7 +2,10 @@ package dmd.clientmanagement.service;
 
 import dmd.clientmanagement.dto.AuthResponse;
 import dmd.clientmanagement.dto.OAuth2TokenRequest;
+import dmd.clientmanagement.entity.user.Role;
+import dmd.clientmanagement.entity.user.User;
 import dmd.clientmanagement.mapper.OAuth2UserDetails;
+import dmd.clientmanagement.repository.UserRepository;
 import dmd.clientmanagement.security.JwtService;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +27,8 @@ public class OAuth2UserService {
 
     private final JwtService jwtService;
     private final Dotenv dotenv;
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
+    private final UserRepository userRepository;
 
     @Value("${google.redirect-uri}")
     private String redirectUri;
@@ -51,11 +55,12 @@ public class OAuth2UserService {
                 "grant_type", "authorization_code"
         );
 
-        Map<String, Object> tokenResponse = restTemplate.postForObject(
-                tokenUri,
-                tokenRequestBody,
-                Map.class
-        );
+        Map<String, Object> tokenResponse = webClient.post()
+                .uri(tokenUri)
+                .bodyValue(tokenRequestBody)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
 
         if (tokenResponse == null || !tokenResponse.containsKey("access_token")) {
             throw new IllegalStateException("Failed to retrieve access token from Google");
@@ -64,10 +69,12 @@ public class OAuth2UserService {
         String accessToken = (String) tokenResponse.get("access_token");
 
         // Step 2: Retrieve user information using the access token
-        Map<String, Object> userInfo = restTemplate.getForObject(
-                userInfoUri + "?access_token=" + accessToken,
-                Map.class
-        );
+        Map<String, Object> userInfo = webClient.get()
+                .uri(userInfoUri)
+                .headers(headers -> headers.setBearerAuth(accessToken))
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
 
         if (userInfo == null || !userInfo.containsKey("email")) {
             throw new IllegalStateException("Failed to retrieve user info from Google");
@@ -82,21 +89,34 @@ public class OAuth2UserService {
     }
 
     /**
-     * Processes the OAuth2 user and generates a JWT.
+     * Processes the OAuth2 user, creates or fetches a user in the database, and generates a JWT.
      *
      * @param oAuth2User The authenticated user.
-     * @return AuthResponse containing the JWT and user details.
+     * @return AuthResponse containing the JWT, user details, and userId.
      */
     public AuthResponse processOAuth2User(OAuth2User oAuth2User) {
         String email = oAuth2User.getAttribute("email");
 
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
-        UserDetails userDetails = new OAuth2UserDetails(email, authorities);
+        // Check if the user exists in the database
+        User user = userRepository.findByUsername(email).orElseGet(() -> {
+            // Create a new user if not found
+            User newUser = User.builder()
+                    .username(email) // Use email as the username
+                    .role(Role.USER) // Default role for OAuth2 users
+                    .build();
+            return userRepository.save(newUser); // Save the new user to the database
+        });
 
-        // Generate a token using UserDetails
-        String token = jwtService.getToken(userDetails);
+        // Generate a token using the user
+        String token = jwtService.getToken(user);
 
-        return new AuthResponse(token, email, "USER"); // Default role assigned
+        return AuthResponse.builder()
+                .token(token)
+                .username(user.getUsername())
+                .role(user.getRole().name())
+                .userId(user.getId()) // Include the userId
+                .build();
     }
+
 }
 
