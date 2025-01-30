@@ -16,7 +16,7 @@ public class UserMapper {
                 user.getId(),
                 user.getUsername(),
                 user.getRole().name(),
-                user.getServices()
+                user.getServiceTypes()
         );
     }
 
@@ -26,7 +26,7 @@ public class UserMapper {
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setRole(role);
-        user.setServices(userDto.getServices());
+        user.setServiceTypes(userDto.getServices());
         return user;
     }
 }

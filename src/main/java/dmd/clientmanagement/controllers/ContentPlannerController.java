@@ -24,9 +24,14 @@ public class ContentPlannerController {
         return ResponseEntity.ok(contentPlannerService.getContentPlansByUserId(userId));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContentPlan(@PathVariable Long id) {
-        contentPlannerService.deleteContentPlan(id);
+    @PatchMapping("/{plannerId}")
+    public ResponseEntity<ContentPlannerDto> updateContentPlan(@PathVariable Long plannerId, @RequestBody ContentPlannerDto contentPlannerDto) {
+        return ResponseEntity.ok(contentPlannerService.updateContentPlan(plannerId, contentPlannerDto));
+    }
+
+    @DeleteMapping("/{plannerId}")
+    public ResponseEntity<Void> deleteContentPlan(@PathVariable Long plannerId) {
+        contentPlannerService.deleteContentPlan(plannerId);
         return ResponseEntity.noContent().build();
     }
 }

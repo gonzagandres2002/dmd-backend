@@ -1,6 +1,5 @@
 package dmd.clientmanagement.dto;
 
-import dmd.clientmanagement.entity.user.User;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,6 +9,8 @@ import java.time.LocalDate;
 @Builder
 public class ContentPlannerDto {
     private Long userId;
+    private Long plannerId;
+    private String name;
     private String title;
     private String description;
     private LocalDate scheduledDate;

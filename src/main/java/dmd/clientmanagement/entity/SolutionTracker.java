@@ -12,9 +12,8 @@ import java.time.LocalDate;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContentPlanner extends Functionality {
-
-    private LocalDate scheduledDate;
-
-    private String platform; // e.g., "Facebook", "Twitter", etc.
+public class SolutionTracker extends Functionality {
+    private int progressPercentage;
+    private LocalDate startDate;
+    private LocalDate endDate;
 }
