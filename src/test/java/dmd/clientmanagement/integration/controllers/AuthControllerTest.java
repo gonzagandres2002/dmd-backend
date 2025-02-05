@@ -1,7 +1,8 @@
-package dmd.clientmanagement.controllers;
+package dmd.clientmanagement.integration.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dmd.clientmanagement.config.SecurityConfig;
+import dmd.clientmanagement.controllers.AuthController;
 import dmd.clientmanagement.dto.AuthResponse;
 import dmd.clientmanagement.dto.RegisterRequest;
 import dmd.clientmanagement.security.JwtService;
