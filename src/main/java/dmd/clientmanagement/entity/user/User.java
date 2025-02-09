@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users", uniqueConstraints = {
-    @UniqueConstraint(columnNames = "username")
+    @UniqueConstraint(columnNames = {"username", "email"})
 })
 public class User implements UserDetails {
     @Id
@@ -30,12 +30,15 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     String username;
+    @Column(nullable = false)
+    String email;
     String password;
     String firstname;
     String lastname;
     String country;
     @Enumerated(EnumType.STRING)
     Role role;
+    private boolean emailVerified;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Functionality> functionalities;

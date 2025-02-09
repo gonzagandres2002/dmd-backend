@@ -15,18 +15,8 @@ public class UserMapper {
         return new UserDto(
                 user.getId(),
                 user.getUsername(),
-                user.getRole().name(),
+                user.getRole(),
                 user.getServiceTypes()
         );
-    }
-
-    public User toEntity(UserDto userDto) {
-        Role role = Role.valueOf(userDto.getRole().toUpperCase());
-
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setRole(role);
-        user.setServiceTypes(userDto.getServices());
-        return user;
     }
 }
