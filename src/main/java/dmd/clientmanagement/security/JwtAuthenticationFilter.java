@@ -86,7 +86,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicEndpoint(String requestPath) {
-        return requestPath.startsWith("/auth") || requestPath.startsWith("/public");
+        return requestPath.startsWith("/auth")
+                || requestPath.startsWith("/public")
+                || requestPath.startsWith("/swagger-ui")
+                || requestPath.startsWith("/v3/api-docs")
+                || requestPath.startsWith("/swagger-resources");
     }
 }
 

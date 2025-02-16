@@ -72,16 +72,14 @@ public class AuthService {
         sendVerificationEmail(savedUser.getEmail(), token);
 
         return AuthResponse.builder()
-                .token(jwtService.getToken(savedUser))
                 .username(savedUser.getUsername())
-                .role(savedUser.getAuthorities().stream().findFirst().get().getAuthority()) // Get the role from authorities
-                .userId(savedUser.getId()) // Use the saved user's id
+                .message("Registration successful! Please verify your email to activate your account.")
                 .build();
     }
 
     private void sendVerificationEmail(String email, String token) {
         String subject = "Verify Your Email Address";
-        String verificationLink = "http://localhost:8080/api/auth/verify?token=" + token;
+        String verificationLink = "http://localhost:8080/auth/verify?token=" + token;
 
         String emailContent = "<p>Dear user,</p>" +
                 "<p>Click the link below to verify your email address:</p>" +
@@ -89,7 +87,7 @@ public class AuthService {
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
+            MimeMessageHelper helper = new MimeMessageHelper(message); 
             helper.setTo(email);
             helper.setSubject(subject);
             helper.setText(emailContent, true); // True for HTML content

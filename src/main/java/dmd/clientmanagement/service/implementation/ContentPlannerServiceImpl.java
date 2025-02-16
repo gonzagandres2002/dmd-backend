@@ -31,7 +31,7 @@ public class ContentPlannerServiceImpl implements ContentPlannerService {
         User user = userRepository.findById(contentPlannerDto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(contentPlannerDto.getUserId()));
 
-        ServiceType serviceType = serviceTypeRepository.findById(2L)
+        ServiceType serviceType = serviceTypeRepository.findByName("marketing")
                 .orElseThrow(() -> new IllegalArgumentException("ServiceType not found"));
 
         if (!user.getServiceTypes().contains(serviceType)) {

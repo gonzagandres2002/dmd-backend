@@ -64,7 +64,7 @@ public class SolutionTrackerServiceImpl implements SolutionTrackerService {
     public SolutionTrackerDto createSolution(SolutionTrackerDto solutionTrackerDto) {
         User user = userRepository.findById(solutionTrackerDto.getUserId()).orElseThrow(() -> new UserNotFoundException(solutionTrackerDto.getUserId()));
 
-        ServiceType serviceType = serviceTypeRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("ServiceType not found"));
+        ServiceType serviceType = serviceTypeRepository.findByName("software").orElseThrow(() -> new IllegalArgumentException("ServiceType not found"));
 
         if (!user.getServiceTypes().contains(serviceType)) {
             user.getServiceTypes().add(serviceType);

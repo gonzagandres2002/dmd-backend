@@ -11,8 +11,8 @@ public class DmdBackendApplication {
     public static void main(String[] args) {
 
         Dotenv dotenv = Dotenv.load();
-        System.setProperty("OUTLOOK_MAIL_USERNAME", dotenv.get("OUTLOOK_MAIL_USERNAME"));
-        System.setProperty("OUTLOOK_MAIL_PASSWORD", dotenv.get("OUTLOOK_MAIL_PASSWORD"));
+        System.setProperty("GMAIL_MAIL_USERNAME", dotenv.get("GMAIL_MAIL_USERNAME"));
+        System.setProperty("GMAIL_MAIL_PASSWORD", dotenv.get("GMAIL_MAIL_PASSWORD"));
 
 
         SpringApplication.run(DmdBackendApplication.class, args);
