@@ -54,6 +54,16 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    public String validateTokenAndGetSubject(String token) {
+        // Ensure the token is not expired
+        if (isTokenExpired(token)) {
+            throw new IllegalArgumentException("Token is expired");
+        }
+
+        // Extract and return the subject (username) from the token
+        return getUsernameFromToken(token);
+    }
+
     public String getUsernameFromToken(String token) {
         return getClaim(token, Claims::getSubject);
     }
@@ -84,5 +94,4 @@ public class JwtService {
     private boolean isTokenExpired(String token) {
        return getExpiration(token).before(new Date());
     }
-
 }

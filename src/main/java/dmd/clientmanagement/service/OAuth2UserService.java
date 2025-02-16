@@ -2,14 +2,14 @@ package dmd.clientmanagement.service;
 
 import dmd.clientmanagement.dto.AuthResponse;
 import dmd.clientmanagement.dto.OAuth2TokenRequest;
-import dmd.clientmanagement.mapper.OAuth2UserDetails;
+import dmd.clientmanagement.entity.user.Role;
+import dmd.clientmanagement.entity.user.User;
+import dmd.clientmanagement.repository.UserRepository;
 import dmd.clientmanagement.security.JwtService;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OAuth2UserService {
 
-    private final WebClient webClient;
     private final JwtService jwtService;
     private final Dotenv dotenv;
+    private final WebClient webClient;
+    private final UserRepository userRepository;
 
     @Value("${google.redirect-uri}")
     private String redirectUri;
@@ -85,21 +86,38 @@ public class OAuth2UserService {
     }
 
     /**
-     * Processes the OAuth2 user and generates a JWT.
+     * Processes the OAuth2 user, creates or fetches a user in the database, and generates a JWT.
      *
      * @param oAuth2User The authenticated user.
-     * @return AuthResponse containing the JWT and user details.
+     * @return AuthResponse containing the JWT, user details, and userId.
      */
     public AuthResponse processOAuth2User(OAuth2User oAuth2User) {
         String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
 
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
-        UserDetails userDetails = new OAuth2UserDetails(email, authorities);
+        // Check if the user exists in the database
+        User user = userRepository.findByUsername(email).orElseGet(() -> {
+            // Create a new user if not found
+            User newUser = User.builder()
+                    .username(email) // Use email as the username
+                    .firstname(name)
+                    .role(Role.USER) // Default role for OAuth2 users
+                    .emailVerified(true)
+                    .email(email)
+                    .build();
+            return userRepository.save(newUser); // Save the new user to the database
+        });
 
-        // Generate a token using UserDetails
-        String token = jwtService.getToken(userDetails);
+        // Generate a token using the user
+        String token = jwtService.getToken(user);
 
-        return new AuthResponse(token, email, "USER"); // Default role assigned
+        return AuthResponse.builder()
+                .token(token)
+                .username(user.getUsername())
+                .role(user.getRole().name())
+                .userId(user.getId()) // Include the userId
+                .build();
     }
+
 }
 

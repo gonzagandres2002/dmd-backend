@@ -1,6 +1,7 @@
 package dmd.clientmanagement.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import dmd.clientmanagement.entity.Functionality;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users", uniqueConstraints = {
-    @UniqueConstraint(columnNames = "username")
+    @UniqueConstraint(columnNames = {"username", "email"})
 })
 public class User implements UserDetails {
     @Id
@@ -29,21 +30,27 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     String username;
+    @Column(nullable = false)
+    String email;
     String password;
     String firstname;
     String lastname;
     String country;
     @Enumerated(EnumType.STRING)
     Role role;
+    private boolean emailVerified;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Functionality> functionalities;
+
+    @ManyToMany
     @JoinTable(
             name = "user_services",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "service_id", referencedColumnName = "id")
     )
     @JsonBackReference
-    private List<ServiceType> services;
+    private List<ServiceType> serviceTypes;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

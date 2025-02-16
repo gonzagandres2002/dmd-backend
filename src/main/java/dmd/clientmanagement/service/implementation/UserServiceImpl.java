@@ -57,11 +57,16 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        List<ServiceType> services = new ArrayList<>(serviceTypeRepository.findAllById(serviceTypeIds));
-        user.setServices(services);
+        List<ServiceType> servicesTypes = new ArrayList<>(serviceTypeRepository.findAllById(serviceTypeIds));
+        user.setServiceTypes(servicesTypes);
 
         User updatedUser = userRepository.save(user);
 
         return userMapper.toDto(updatedUser);
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
     }
 }

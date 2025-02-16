@@ -1,4 +1,3 @@
-
 # Backend for Tailored Software and Social Media Management Services
 
 This repository contains the backend application for the DigiMediaDevs platform. It provides APIs to support tailored software and social media management services, ensuring secure, efficient, and scalable operations.
@@ -6,121 +5,106 @@ This repository contains the backend application for the DigiMediaDevs platform.
 ---
 
 ## Features
-
 - **User Authentication and Authorization**
-  - JWT (JSON Web Token) for secure user sessions.
-  - OAuth integration for third-party authentication.
+    - JWT (JSON Web Token) for secure user sessions.
+    - OAuth integration for third-party authentication.
 - **Database Management**
-  - PostgreSQL for relational database needs.
+    - PostgreSQL for relational database needs.
 - **RESTful APIs**
-  - Structured endpoints for frontend communication.
-- **Scalability**
-  - Built on Spring Boot for high performance and easy scalability.
+    - Structured endpoints accessible via Swagger UI (`/swagger-ui`).
+- **Email Services**
+    - JavaMailSender for email authentication and notifications.
+- **Scalability and Documentation**
+    - Built on Spring Boot with Swagger for API documentation.
 
 ---
 
 ## Tech Stack
-
 - **Language:** Java (Spring Boot)
 - **Security:** JWT, OAuth
 - **Database:** PostgreSQL
-- **Build Tool:** Maven/Gradle
-- **Other:** REST API, Hibernate ORM
+- **Build Tool:** Maven
+- **Testing:** JUnit
+- **API Documentation:** Swagger
+- **Other:** REST API, Hibernate ORM, JavaMailSender
 
 ---
 
 ## Prerequisites
-
-1. **Java Development Kit (JDK)**
-   - Version 11 or higher
-2. **PostgreSQL**
-   - Ensure a running PostgreSQL instance.
-3. **Maven/Gradle**
-   - Build tool for dependency management.
-4. **Environment Variables**
-   - Set up the following variables in your environment:
-     - `DATABASE_URL`: Connection string for your PostgreSQL database.
-     - `JWT_SECRET`: Secret key for JWT signing and verification.
-     - `OAUTH_CLIENT_ID`: Client ID for OAuth integration.
-     - `OAUTH_CLIENT_SECRET`: Client secret for OAuth integration.
+- **Java Development Kit (JDK):** Version 11 or higher
+- **PostgreSQL:** Ensure a running PostgreSQL instance
+- **Maven:** Build tool for dependency management
+- **Environment Variables:**
+    - `JWT_SECRET`: 1234567890ABCDEF...
+    - `OAUTH_CLIENT_ID`: 123456789012-...
+    - `OAUTH_CLIENT_SECRET`: ABCDEF-...
+    - `GMAIL_MAIL_USERNAME`: newemail@gmail.com
+    - `GMAIL_MAIL_PASSWORD`: newpassword123
 
 ---
 
 ## Installation
-
-1. **Clone the Repository**
+1. **Clone the Repository:**
    ```bash
    git clone <repository_url>
    cd <repository_folder>
    ```
+2. **Configure Environment Variables:** Add the required variables to your system or a `.env` file.
+3. **Set up the Database:** Update `application.properties`:
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/new-database
+   spring.datasource.username=newuser
+   spring.datasource.password=newpassword
+   spring.jpa.hibernate.ddl-auto=update
 
-2. **Configure Environment Variables**
-   - Add the required environment variables to your system or a `.env` file.
+   # OAuth properties
+   google.redirect-uri=http://localhost:3000/new-callback
+   google.token-uri=https://oauth2.googleapis.com/new-token
+   google.user-info-uri=https://openidconnect.googleapis.com/v1/new-userinfo
 
-3. **Set up the Database**
-   - Create a PostgreSQL database and update the `application.properties` file:
-     ```properties
-     spring.datasource.url=jdbc:postgresql://<hostname>:<port>/<database_name>
-     spring.datasource.username=<db_username>
-     spring.datasource.password=<db_password>
-     ```
+   # SpringDoc for Swagger
+   springdoc.swagger-ui.path=/swagger-ui
 
-4. **Run the Application**
+   # Gmail SMTP Configuration
+   spring.mail.host=smtp.gmail.com
+   spring.mail.port=587
+   spring.mail.properties.mail.smtp.auth=true
+   spring.mail.properties.mail.smtp.starttls.enable=true
+   spring.mail.properties.mail.smtp.starttls.required=true
+   spring.mail.properties.mail.debug=true
+   ```
+4. **Run the Application:**
    ```bash
    mvn spring-boot:run
-   ```
-   or
-   ```bash
-   gradle bootRun
    ```
 
 ---
 
-## API Endpoints
-
+## API Endpoints (Viewable via `/swagger-ui`)
 ### Authentication
 - `POST /auth/login` - User login
 - `POST /auth/register` - User registration
 - `POST /auth/refresh` - Refresh JWT token
-
-### Services
-- `GET /services` - Fetch list of services
-- `POST /services` - Add a new service
-- `PUT /services/:id` - Update service details
-- `DELETE /services/:id` - Remove a service
-
-### Social Media Management
-- `GET /social` - Fetch social media accounts
-- `POST /social` - Add a new account
-- `DELETE /social/:id` - Delete an account
-
 ---
 
 ## Testing
-
-- Run tests using Maven:
+- **Run JUnit Tests:**
   ```bash
   mvn test
-  ```
-- Run tests using Gradle:
-  ```bash
-  gradle test
   ```
 
 ---
 
 ## Contributing
-
 We welcome contributions! Please fork the repository and submit a pull request.
 
 ---
 
 ## License
-
 [MIT License](./LICENSE)
 
 ---
 
 ## Contact
+For inquiries or support, contact me at andresfg2002@gmail.com.
 
-For inquiries or support, contact us at andresfg2002@gmail.com.

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,6 +23,10 @@ public class ServiceType {
 
     private String name;
 
-    @ManyToMany(mappedBy = "services")
-    private List<User> users;
+    @OneToMany(mappedBy = "serviceType", fetch = FetchType.LAZY)
+    private List<Functionality> functionalities;
+
+    @ManyToMany(mappedBy = "serviceTypes")
+    private List<User> users = new ArrayList<>();
+
 }
