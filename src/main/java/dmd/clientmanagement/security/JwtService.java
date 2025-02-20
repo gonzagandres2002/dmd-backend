@@ -1,6 +1,5 @@
 package dmd.clientmanagement.security;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -23,7 +22,8 @@ import io.jsonwebtoken.Jwts;
 @RequiredArgsConstructor
 public class JwtService {
 
-    private final Dotenv dotenv;
+    @Value("${jwt.secret-key}")
+    private String secretKey;
 
     public String getToken(UserDetails user) {
         Map<String, Object> extraClaims = new HashMap<>();
@@ -50,7 +50,7 @@ public class JwtService {
     }
 
     private Key getKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(dotenv.get("JWT_SECRET_KEY"));
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

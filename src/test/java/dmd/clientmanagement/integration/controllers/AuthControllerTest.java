@@ -5,6 +5,7 @@ import dmd.clientmanagement.config.SecurityConfig;
 import dmd.clientmanagement.controllers.AuthController;
 import dmd.clientmanagement.dto.AuthResponse;
 import dmd.clientmanagement.dto.RegisterRequest;
+import dmd.clientmanagement.repository.UserRepository;
 import dmd.clientmanagement.security.JwtService;
 import dmd.clientmanagement.service.AuthService;
 import org.junit.jupiter.api.Test;
@@ -38,16 +39,19 @@ public class AuthControllerTest {
     private AuthService authService;
 
     @MockBean
-    private JwtService jwtService;  // Add this
+    private JwtService jwtService;
 
     @MockBean
-    private UserDetailsService userDetailsService;  // Add this
+    private UserDetailsService userDetailsService;
 
     @MockBean
     private AuthenticationProvider authenticationProvider;
 
     @MockBean
     private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @Test
     public void testRegisterUser() throws Exception {

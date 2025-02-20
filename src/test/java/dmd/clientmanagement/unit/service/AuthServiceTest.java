@@ -8,11 +8,13 @@ import dmd.clientmanagement.entity.user.User;
 import dmd.clientmanagement.repository.UserRepository;
 import dmd.clientmanagement.security.JwtService;
 import dmd.clientmanagement.service.AuthService;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -37,22 +39,25 @@ public class AuthServiceTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
+    @Mock
+    private JavaMailSender mailSender;
+
     @InjectMocks
     private AuthService authService;
 
     @Test
     public void testLogin() {
-
         // Given
         LoginRequest request = new LoginRequest("username", "password");
         User user = User.builder()
-                .id(1L) // Simulate generated ID
+                .id(1L)
                 .username("username")
                 .password("encodedPassword")
                 .firstname("firstname")
                 .lastname("lastname")
                 .country("country")
                 .role(Role.USER)
+                .emailVerified(true)
                 .build();
 
         // When
@@ -67,8 +72,6 @@ public class AuthServiceTest {
         assertThat(response.getUsername()).isEqualTo("username");
         assertThat(response.getRole()).isEqualTo("USER");
         assertThat(response.getUserId()).isEqualTo(1L);
-
-
     }
 
     @Test
@@ -84,17 +87,19 @@ public class AuthServiceTest {
                 .lastname("lastname")
                 .country("country")
                 .role(Role.USER)
+                .emailVerified(false)
                 .build();
+
+        MimeMessage mimeMessage = org.mockito.Mockito.mock(MimeMessage.class);
 
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(jwtService.getToken(any(User.class))).thenReturn("dummy-token");
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         AuthResponse response = authService.register(request);
 
         assertThat(response).isNotNull();
-        assertThat(response.getToken()).isEqualTo("dummy-token");
-        assertThat(response.getUserId()).isNotNull();
+        assertThat(response.getMessage()).isNotNull();
     }
 }
-

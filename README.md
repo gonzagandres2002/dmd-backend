@@ -36,10 +36,8 @@ This repository contains the backend application for the DigiMediaDevs platform.
 - **Maven:** Build tool for dependency management
 - **Environment Variables:**
     - `JWT_SECRET`: 1234567890ABCDEF...
-    - `OAUTH_CLIENT_ID`: 123456789012-...
-    - `OAUTH_CLIENT_SECRET`: ABCDEF-...
-    - `GMAIL_MAIL_USERNAME`: newemail@gmail.com
-    - `GMAIL_MAIL_PASSWORD`: newpassword123
+    - `GOOGLE_CLIENT_ID`: 123456789012-...
+    - `GOOGLE_CLIENT_ID`: ABCDEF-...
 
 ---
 
@@ -68,10 +66,17 @@ This repository contains the backend application for the DigiMediaDevs platform.
    # Gmail SMTP Configuration
    spring.mail.host=smtp.gmail.com
    spring.mail.port=587
+   spring.mail.username=email@gmail.com
+   spring.mail.password=googleAppPassword
    spring.mail.properties.mail.smtp.auth=true
    spring.mail.properties.mail.smtp.starttls.enable=true
    spring.mail.properties.mail.smtp.starttls.required=true
    spring.mail.properties.mail.debug=true
+   
+   # Initial Admin User
+   admin.username=admin123
+   admin.password=123
+   admin.email=admin@gmail.com
    ```
 4. **Run the Application:**
    ```bash
