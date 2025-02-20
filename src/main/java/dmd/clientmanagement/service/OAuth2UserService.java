@@ -6,7 +6,6 @@ import dmd.clientmanagement.entity.user.Role;
 import dmd.clientmanagement.entity.user.User;
 import dmd.clientmanagement.repository.UserRepository;
 import dmd.clientmanagement.security.JwtService;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,7 +22,6 @@ import java.util.Map;
 public class OAuth2UserService {
 
     private final JwtService jwtService;
-    private final Dotenv dotenv;
     private final WebClient webClient;
     private final UserRepository userRepository;
 
@@ -36,6 +34,12 @@ public class OAuth2UserService {
     @Value("${google.user-info-uri}")
     private String userInfoUri;
 
+    @Value("${google.client-id}")
+    private String clientId;
+
+    @Value("${google.client-secret}")
+    private String clientSecret;
+
     /**
      * Validates the token with Google and retrieves the user info.
      *
@@ -46,8 +50,8 @@ public class OAuth2UserService {
         // Step 1: Exchange the authorization code for an access token
         Map<String, String> tokenRequestBody = Map.of(
                 "code", tokenRequest.getCode(),
-                "client_id", dotenv.get("GOOGLE_CLIENT_ID"),
-                "client_secret", dotenv.get("GOOGLE_CLIENT_SECRET"),
+                "client_id", clientId,
+                "client_secret", clientSecret,
                 "redirect_uri", redirectUri,
                 "grant_type", "authorization_code"
         );
@@ -115,7 +119,7 @@ public class OAuth2UserService {
                 .token(token)
                 .username(user.getUsername())
                 .role(user.getRole().name())
-                .userId(user.getId()) // Include the userId
+                .userId(user.getId())
                 .build();
     }
 
